@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GLADIATORS — Complexe Sportif Premium | Ouverture Septembre 2027</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Barlow+Condensed:wght@300;400;500;600;700&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --red: #C0392B;
+  --red-dark: #8B1A1A;
+  --red-glow: rgba(192,57,43,0.15);
+  --black: #0a0a0a;
+  --black2: #111;
+  --white: #f5f0eb;
+  --grey: #888;
+  --gold: #c9a84c;
+}
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--black);
+  color: var(--white);
+  font-family: 'Barlow', sans-serif;
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* ── SPLASH SCREEN ── */
+#splash-screen {
+  position: fixed; inset: 0; z-index: 11000;
+  background: #000;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: opacity 0.8s ease;
+}
+#splash-screen.hide { opacity: 0; pointer-events: none; }
+.splash-logo {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: clamp(48px, 10vw, 100px);
+  font-weight: 700; letter-spacing: 0.2em;
+  color: #fff; text-transform: uppercase;
+  margin-bottom: 16px;
+  animation: splashPulse 2s ease-in-out infinite;
+}
+.splash-logo span { color: #C0392B; }
+@keyframes splashPulse { 0%,100%{opacity:0.7} 50%{opacity:1} }
+.splash-line {
+  width: 40px; height: 1px;
+  background: #C0392B;
+  margin: 0 auto 24px;
+}
+.splash-hint {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 11px; font-weight: 600; letter-spacing: 0.4em;
+  text-transform: uppercase; color: rgba(255,255,255,0.4);
+  border: 1px solid rgba(192,57,43,0.4); padding: 12px 32px;
+  transition: all 0.3s;
+  animation: splashBlink 1.5s ease-in-out infinite;
+}
+@keyframes splashBlink { 0%,100%{opacity:0.4} 50%{opacity:1} }
+#splash-screen:hover .splash-hint {
+  border-color: #C0392B; color: #fff;
+}
+
+/* ── TEASER OVERLAY ── */
+#teaser-overlay {
+  position: fixed; inset: 0; z-index: 10000;
+  background: #000;
+  display: flex; align-items: center; justify-content: center;
+  transition: opacity 1.5s ease;
+}
+#teaser-overlay.fade-out { opacity: 0; pointer-events: none; }
+#teaser-video {
+  width: 100%; height: 100%;
+  object-fit: cover;
+}
+#skip-btn {
+  position: absolute; bottom: 40px; right: 40px;
+  background: transparent; border: 1px solid rgba(255,255,255,0.3);
+  color: rgba(255,255,255,0.6);
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 10px; font-weight: 600; letter-spacing: 0.3em;
+  text-transform: uppercase; padding: 10px 22px;
+  cursor: pointer; transition: all 0.3s;
+  z-index: 10001;
+}
+#skip-btn:hover { border-color: var(--red); color: var(--white); }
+
+/* ── CURSOR ── */
+.cursor { width:10px; height:10px; background:var(--red); border-radius:50%; position:fixed; top:0; left:0; pointer-events:none; z-index:9999; transition:transform 0.15s ease; mix-blend-mode:difference; }
+.cursor-ring { width:36px; height:36px; border:1px solid rgba(192,57,43,0.5); border-radius:50%; position:fixed; top:0; left:0; pointer-events:none; z-index:9998; transition:transform 0.08s ease, width 0.2s, height 0.2s, border-color 0.2s; }
+
+/* ── GRAIN OVERLAY ── */
+body::after { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events:none; z-index:9990; opacity:0.4; }
+
+/* ── NAV ── */
+nav { position:fixed; top:0; left:0; right:0; z-index:100; padding:24px 60px; display:flex; align-items:center; justify-content:space-between; background:linear-gradient(to bottom, rgba(10,10,10,0.95), transparent); }
+.nav-logo { font-family:'Barlow Condensed', sans-serif; font-size:22px; font-weight:700; letter-spacing:0.18em; color:var(--white); text-transform:uppercase; }
+.nav-logo span { color:var(--red); }
+.nav-badge { font-size:9px; font-weight:500; letter-spacing:0.3em; text-transform:uppercase; color:var(--grey); border:1px solid #222; padding:6px 16px; }
+
+/* ── HERO ── */
+.hero { min-height:100vh; position:relative; display:flex; flex-direction:column; align-items:center; justify-content:center; overflow:hidden; padding:120px 60px 80px; }
+.hero::before { content:''; position:absolute; inset:0; background-image:linear-gradient(rgba(192,57,43,0.04) 1px, transparent 1px),linear-gradient(90deg, rgba(192,57,43,0.04) 1px, transparent 1px); background-size:80px 80px; animation:gridPulse 8s ease-in-out infinite; }
+@keyframes gridPulse { 0%,100%{opacity:0.5} 50%{opacity:1} }
+.hero-slash { position:absolute; width:3px; height:120%; background:linear-gradient(to bottom, transparent, var(--red), transparent); transform:rotate(15deg); left:38%; top:-10%; opacity:0.12; }
+.hero-slash-2 { position:absolute; width:1px; height:100%; background:linear-gradient(to bottom, transparent, var(--red-dark), transparent); transform:rotate(15deg); left:60%; top:0; opacity:0.08; }
+.hero-content { position:relative; z-index:2; text-align:center; max-width:900px; }
+.hero-eyebrow { font-size:10px; font-weight:500; letter-spacing:0.4em; text-transform:uppercase; color:var(--red); margin-bottom:28px; animation:fadeUp 1s ease both; }
+.hero-title { font-family:'Cormorant Garamond', serif; font-size:clamp(72px,10vw,130px); font-weight:700; line-height:0.9; letter-spacing:-0.01em; color:var(--white); animation:fadeUp 1s 0.1s ease both; }
+.hero-title .outline { -webkit-text-stroke:1px rgba(245,240,235,0.3); color:transparent; }
+.hero-title .red { color:var(--red); }
+.hero-sub { font-family:'Cormorant Garamond', serif; font-size:20px; font-weight:300; font-style:italic; color:var(--grey); letter-spacing:0.06em; margin-top:24px; margin-bottom:60px; animation:fadeUp 1s 0.2s ease both; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+
+/* ── COUNTDOWN ── */
+.countdown-wrap { animation:fadeUp 1s 0.35s ease both; margin-bottom:56px; }
+.countdown-label { font-size:9px; letter-spacing:0.35em; text-transform:uppercase; color:var(--grey); margin-bottom:20px; }
+.countdown { display:flex; gap:6px; align-items:flex-end; justify-content:center; }
+.cd-block { display:flex; flex-direction:column; align-items:center; min-width:90px; }
+.cd-num { font-family:'Barlow Condensed', sans-serif; font-size:64px; font-weight:700; line-height:1; color:var(--white); background:linear-gradient(to bottom, #fff, #888); -webkit-background-clip:text; -webkit-text-fill-color:transparent; transition:transform 0.3s ease; }
+.cd-block:hover .cd-num { transform:scale(1.05); }
+.cd-unit { font-size:9px; font-weight:500; letter-spacing:0.25em; text-transform:uppercase; color:var(--red); margin-top:4px; }
+.cd-sep { font-family:'Barlow Condensed', sans-serif; font-size:48px; font-weight:300; color:var(--red-dark); line-height:1.1; padding-bottom:12px; animation:blink 1.2s ease-in-out infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+/* ── HERO FORM ── */
+.preinscription { animation:fadeUp 1s 0.5s ease both; }
+.form-wrap { display:flex; gap:0; max-width:520px; margin:0 auto; border:1px solid #222; overflow:hidden; }
+.form-wrap input { flex:1; background:rgba(255,255,255,0.03); border:none; outline:none; padding:16px 22px; color:var(--white); font-family:'Barlow', sans-serif; font-size:13px; letter-spacing:0.05em; }
+.form-wrap input::placeholder { color:#444; }
+.form-wrap input:focus { background:rgba(192,57,43,0.05); }
+.form-wrap button { background:var(--red); border:none; cursor:pointer; padding:16px 28px; font-family:'Barlow Condensed', sans-serif; font-size:11px; font-weight:600; letter-spacing:0.2em; text-transform:uppercase; color:#fff; transition:background 0.2s ease, transform 0.1s; white-space:nowrap; }
+.form-wrap button:hover { background:#a93226; }
+.form-wrap button:active { transform:scale(0.98); }
+.form-note { font-size:10px; color:#444; letter-spacing:0.1em; margin-top:12px; text-align:center; }
+.form-note span { color:var(--red); }
+
+/* ── SCROLL INDICATOR ── */
+.scroll-hint { position:absolute; bottom:40px; left:50%; transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:8px; animation:fadeUp 1s 0.8s ease both; }
+.scroll-hint span { font-size:8px; letter-spacing:0.3em; text-transform:uppercase; color:#333; }
+.scroll-line { width:1px; height:40px; background:linear-gradient(to bottom, var(--red), transparent); animation:scrollPulse 2s ease-in-out infinite; }
+@keyframes scrollPulse { 0%{transform:scaleY(0);transform-origin:top} 50%{transform:scaleY(1);transform-origin:top} 51%{transform:scaleY(1);transform-origin:bottom} 100%{transform:scaleY(0);transform-origin:bottom} }
+
+/* ── SPACES SECTION ── */
+.section-spaces { padding:120px 60px; position:relative; }
+.section-header { display:flex; align-items:flex-end; justify-content:space-between; margin-bottom:60px; }
+.section-label { font-size:9px; font-weight:600; letter-spacing:0.35em; text-transform:uppercase; color:var(--red); margin-bottom:10px; }
+.section-title { font-family:'Cormorant Garamond', serif; font-size:52px; font-weight:600; line-height:1; color:var(--white); }
+.section-count { font-family:'Cormorant Garamond', serif; font-size:100px; font-weight:300; color:rgba(255,255,255,0.04); line-height:1; letter-spacing:-0.02em; }
+.spaces-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:2px; }
+.space-card { background:#111; padding:32px 24px; border-top:2px solid transparent; transition:border-color 0.3s, background 0.3s, transform 0.3s; cursor:none; position:relative; overflow:hidden; }
+.space-card::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg, var(--red-glow), transparent); opacity:0; transition:opacity 0.3s; }
+.space-card:hover { border-top-color:var(--red); background:#141414; transform:translateY(-4px); }
+.space-card:hover::before { opacity:1; }
+.space-num { font-family:'Barlow Condensed', sans-serif; font-size:11px; font-weight:600; letter-spacing:0.2em; color:var(--red); margin-bottom:20px; display:block; }
+.space-name { font-family:'Cormorant Garamond', serif; font-size:22px; font-weight:600; color:var(--white); margin-bottom:12px; line-height:1.2; }
+.space-desc { font-size:12px; font-weight:300; color:#666; line-height:1.7; letter-spacing:0.02em; }
+.space-tag { display:inline-block; margin-top:16px; font-size:8px; font-weight:600; letter-spacing:0.2em; text-transform:uppercase; color:var(--red); border-top:1px solid var(--red); padding-top:6px; }
+
+/* ── OFFRES SECTION ── */
+.section-offres { padding:120px 60px; background:#0d0d0d; position:relative; }
+.section-offres::before { content:''; position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(90deg, transparent, var(--red), transparent); }
+.offres-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:2px; margin-top:60px; }
+.offre-card { padding:36px 24px; background:#111; display:flex; flex-direction:column; border-bottom:3px solid transparent; transition:border-color 0.3s, transform 0.3s, background 0.3s; cursor:none; }
+.offre-card:hover { border-bottom-color:var(--red); transform:translateY(-6px); background:#161616; }
+.offre-card.featured { background:linear-gradient(160deg, #1c0505, #111); border-bottom-color:var(--red); position:relative; }
+.featured-badge { position:absolute; top:-1px; left:50%; transform:translateX(-50%); background:var(--red); color:#fff; font-size:8px; font-weight:600; letter-spacing:0.2em; text-transform:uppercase; padding:4px 14px; }
+.offre-name { font-family:'Barlow Condensed', sans-serif; font-size:13px; font-weight:700; letter-spacing:0.25em; text-transform:uppercase; color:var(--red); margin-bottom:8px; }
+.offre-promise { font-family:'Cormorant Garamond', serif; font-size:26px; font-weight:600; color:var(--white); margin-bottom:24px; line-height:1.1; }
+.offre-price { font-family:'Barlow Condensed', sans-serif; font-size:48px; font-weight:700; color:var(--white); line-height:1; }
+.offre-price sup { font-size:20px; vertical-align:top; margin-top:8px; }
+.offre-price sub { font-size:14px; font-weight:300; color:var(--grey); }
+.offre-adhesion { font-size:10px; color:#444; margin-top:6px; margin-bottom:24px; letter-spacing:0.05em; }
+.offre-divider { width:30px; height:1px; background:var(--red); margin-bottom:20px; }
+.offre-features { list-style:none; display:flex; flex-direction:column; gap:8px; flex:1; }
+.offre-features li { font-size:11px; font-weight:300; color:#888; letter-spacing:0.03em; display:flex; align-items:flex-start; gap:8px; }
+.offre-features li::before { content:'—'; color:var(--red); flex-shrink:0; font-size:11px; line-height:1.6; }
+.offre-cta { margin-top:24px; padding:12px 20px; border:1px solid #222; background:transparent; font-family:'Barlow Condensed', sans-serif; font-size:10px; font-weight:600; letter-spacing:0.2em; text-transform:uppercase; color:var(--grey); cursor:pointer; transition:all 0.2s; }
+.offre-cta:hover, .offre-card.featured .offre-cta { background:var(--red); border-color:var(--red); color:#fff; }
+
+/* ── FOOTER ── */
+footer { background:var(--black); padding:60px; border-top:1px solid #1a1a1a; display:grid; grid-template-columns:1fr 1fr 1fr; gap:40px; align-items:start; }
+.footer-brand .logo { font-family:'Barlow Condensed', sans-serif; font-size:28px; font-weight:700; letter-spacing:0.15em; color:var(--white); margin-bottom:12px; }
+.footer-brand .logo span { color:var(--red); }
+.footer-brand p { font-size:12px; font-weight:300; color:#555; line-height:1.7; }
+.footer-col h4 { font-size:9px; font-weight:600; letter-spacing:0.3em; text-transform:uppercase; color:var(--red); margin-bottom:16px; }
+.footer-col ul { list-style:none; display:flex; flex-direction:column; gap:8px; }
+.footer-col ul li { font-size:12px; font-weight:300; color:#555; }
+.footer-bottom { border-top:1px solid #1a1a1a; padding:20px 60px; display:flex; justify-content:space-between; align-items:center; }
+.footer-bottom span { font-size:10px; color:#333; letter-spacing:0.1em; }
+.footer-bottom span b { color:var(--red); }
+
+/* ── TOAST ── */
+.toast { position:fixed; bottom:40px; right:40px; z-index:999; background:var(--red); color:#fff; padding:14px 24px; font-size:12px; font-weight:500; letter-spacing:0.05em; transform:translateY(100px); opacity:0; transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1); }
+.toast.show { transform:translateY(0); opacity:1; }
+
+/* Scroll reveal */
+.reveal { opacity:0; transform:translateY(40px); transition:opacity 0.8s ease, transform 0.8s ease; }
+.reveal.visible { opacity:1; transform:translateY(0); }
+
+/* ── MODAL FORMULAIRE ── */
+#form-modal {
+  display: none;
+  position: fixed; inset: 0; z-index: 5000;
+  background: rgba(0,0,0,0.85);
+  backdrop-filter: blur(6px);
+  align-items: center; justify-content: center;
+  animation: fadeIn 0.4s ease;
+}
+#form-modal.open { display: flex; }
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
+
+.modal-inner {
+  width: 100%; max-width: 1000px; max-height: 95vh;
+  overflow-y: auto;
+  animation: slideUp 0.5s cubic-bezier(0.34,1.2,0.64,1) both;
+  position: relative;
+}
+@keyframes slideUp { from{opacity:0;transform:translateY(60px)} to{opacity:1;transform:translateY(0)} }
+
+.modal-close {
+  position: absolute; top: 20px; right: 20px; z-index: 10;
+  background: transparent; border: 1px solid #333; color: #666;
+  width: 36px; height: 36px; border-radius: 50%;
+  font-size: 18px; cursor: pointer; transition: all 0.2s;
+  display: flex; align-items: center; justify-content: center;
+}
+.modal-close:hover { border-color: var(--red); color: var(--white); }
+
+/* FORM STYLES (from gladiators_form.html) */
+.form-page {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.side-left {
+  background: #0d0d0d;
+  padding: 60px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-right: 1px solid #1e1e1e;
+  position: relative;
+  overflow: hidden;
+}
+.side-left::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(192,57,43,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(192,57,43,0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+.logo-form { font-family:'Barlow Condensed', sans-serif; font-size:24px; font-weight:700; letter-spacing:0.18em; color:var(--white); text-transform:uppercase; position:relative; z-index:1; }
+.logo-form span { color:var(--red); }
+.side-tagline { position:relative; z-index:1; }
+.side-tagline .label { font-size:9px; font-weight:600; letter-spacing:0.4em; text-transform:uppercase; color:var(--red); margin-bottom:20px; }
+.side-tagline h1 { font-family:'Cormorant Garamond', serif; font-size:clamp(42px,4vw,64px); font-weight:600; line-height:1.05; color:var(--white); }
+.side-tagline h1 em { color:var(--red); font-style:italic; }
+.side-tagline p { margin-top:20px; font-size:13px; font-weight:300; color:#555; line-height:1.8; }
+.side-badges { position:relative; z-index:1; display:flex; flex-direction:column; gap:12px; }
+.badge-item { display:flex; align-items:center; gap:14px; font-size:11px; font-weight:300; color:#555; letter-spacing:0.05em; }
+.badge-dot { width:6px; height:6px; border-radius:50%; background:var(--red); flex-shrink:0; }
+.slash-deco { position:absolute; width:2px; height:130%; background:linear-gradient(to bottom, transparent, var(--red), transparent); transform:rotate(12deg); right:25%; top:-15%; opacity:0.06; }
+.side-right { padding:60px; display:flex; flex-direction:column; overflow-y:auto; background: #0a0a0a; }
+.form-header { margin-bottom:40px; }
+.form-header .step-label { font-size:9px; font-weight:600; letter-spacing:0.4em; text-transform:uppercase; color:var(--red); margin-bottom:10px; }
+.form-header h2 { font-family:'Cormorant Garamond', serif; font-size:32px; font-weight:600; color:var(--white); line-height:1.1; }
+.form-grid { display:grid; grid-template-columns:1fr 1fr; gap:0; }
+.field { padding:18px 0; border-bottom:1px solid #1e1e1e; position:relative; }
+.field.full { grid-column:1/-1; }
+.field.half-right { border-left:1px solid #1e1e1e; padding-left:24px; }
+.field label { display:block; font-size:8px; font-weight:600; letter-spacing:0.3em; text-transform:uppercase; color:var(--red); margin-bottom:8px; }
+.field input, .field select { width:100%; background:transparent; border:none; outline:none; color:var(--white); font-family:'Barlow', sans-serif; font-size:14px; font-weight:300; letter-spacing:0.03em; cursor:none; appearance:none; }
+.field input::placeholder { color:#333; }
+.field::after { content:''; position:absolute; bottom:-1px; left:0; width:0; height:1px; background:var(--red); transition:width 0.4s ease; }
+.field:focus-within::after { width:100%; }
+.civility-wrap { display:flex; gap:20px; }
+.civ-opt { display:flex; align-items:center; gap:8px; font-size:13px; font-weight:300; color:#666; cursor:pointer; }
+.civ-opt input[type="radio"] { display:none; }
+.civ-box { width:14px; height:14px; border:1px solid #333; border-radius:50%; transition:all 0.2s; flex-shrink:0; }
+.civ-opt input:checked + .civ-box { background:var(--red); border-color:var(--red); }
+.civ-opt:has(input:checked) { color:var(--white); }
+.offre-selector { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-top:4px; }
+.offre-opt { display:none; }
+.offre-label { display:flex; flex-direction:column; align-items:center; padding:12px 8px; border:1px solid #1e1e1e; cursor:pointer; transition:all 0.25s; }
+.offre-label .offre-tier { font-family:'Barlow Condensed', sans-serif; font-size:11px; font-weight:700; letter-spacing:0.2em; color:#555; text-transform:uppercase; transition:color 0.2s; }
+.offre-label .offre-price-tag { font-size:10px; color:#333; margin-top:4px; transition:color 0.2s; }
+.offre-opt:checked + .offre-label { border-color:var(--red); background:rgba(192,57,43,0.08); }
+.offre-opt:checked + .offre-label .offre-tier { color:var(--red); }
+.offre-opt:checked + .offre-label .offre-price-tag { color:rgba(192,57,43,0.7); }
+.offre-opt.elite:checked + .offre-label { border-color:var(--gold); background:rgba(201,168,76,0.06); }
+.offre-opt.elite:checked + .offre-label .offre-tier { color:var(--gold); }
+.offre-opt.elite:checked + .offre-label .offre-price-tag { color:rgba(201,168,76,0.7); }
+.rgpd-wrap { display:flex; align-items:flex-start; gap:14px; margin-top:28px; margin-bottom:28px; cursor:pointer; }
+.rgpd-box { width:16px; height:16px; flex-shrink:0; margin-top:1px; border:1px solid #333; position:relative; transition:all 0.2s; }
+.rgpd-box.checked { border-color:var(--red); background:var(--red); }
+.rgpd-box.checked::after { content:''; position:absolute; left:4px; top:1px; width:5px; height:9px; border-right:1.5px solid #fff; border-bottom:1.5px solid #fff; transform:rotate(45deg); }
+.rgpd-text { font-size:10px; font-weight:300; color:#444; line-height:1.7; letter-spacing:0.02em; }
+.rgpd-text span { color:var(--red); }
+.btn-submit { width:100%; padding:18px; background:var(--red); border:none; cursor:pointer; font-family:'Barlow Condensed', sans-serif; font-size:12px; font-weight:700; letter-spacing:0.3em; text-transform:uppercase; color:#fff; transition:background 0.2s, transform 0.1s; position:relative; overflow:hidden; }
+.btn-submit::before { content:''; position:absolute; inset:0; background:linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent); transform:translateX(-100%); transition:transform 0.5s ease; }
+.btn-submit:hover::before { transform:translateX(100%); }
+.btn-submit:hover { background:#a93226; }
+.btn-submit:active { transform:scale(0.99); }
+.sante-consent-block { margin-top:32px; border:1px solid #1e1e1e; padding:24px; position:relative; transition:border-color 0.3s; }
+.sante-consent-block:hover { border-color:#2a2a2a; }
+.sante-consent-header { display:flex; align-items:flex-start; gap:16px; cursor:pointer; }
+.sante-consent-checkbox { width:18px; height:18px; flex-shrink:0; margin-top:2px; border:1px solid #333; position:relative; transition:all 0.2s; }
+.sante-consent-checkbox.checked { border-color:var(--red); background:var(--red); }
+.sante-consent-checkbox.checked::after { content:''; position:absolute; left:5px; top:1px; width:5px; height:10px; border-right:1.5px solid #fff; border-bottom:1.5px solid #fff; transform:rotate(45deg); }
+.sante-consent-text { flex:1; }
+.sante-consent-title { font-family:'Barlow Condensed', sans-serif; font-size:13px; font-weight:600; letter-spacing:0.15em; text-transform:uppercase; color:var(--white); margin-bottom:6px; }
+.sante-consent-sub { font-size:11px; font-weight:300; color:#555; line-height:1.7; }
+.sante-consent-sub span { color:var(--red); }
+.sante-note { margin-top:16px; background:rgba(192,57,43,0.04); border-left:2px solid var(--red); padding:16px 18px; }
+.sante-note-title { font-size:8px; font-weight:700; letter-spacing:0.35em; text-transform:uppercase; color:var(--red); margin-bottom:8px; }
+.sante-note p { font-size:10px; font-weight:300; color:#555; line-height:1.8; }
+.sante-note p + p { margin-top:6px; }
+.sante-note strong { color:#777; font-weight:500; }
+.sante-fields { max-height:0; overflow:hidden; transition:max-height 0.6s cubic-bezier(0.4,0,0.2,1), opacity 0.4s ease; opacity:0; }
+.sante-fields.open { max-height:2000px; opacity:1; }
+.sante-section-label { font-size:8px; font-weight:700; letter-spacing:0.4em; text-transform:uppercase; color:#333; margin-top:28px; margin-bottom:2px; padding-bottom:10px; border-bottom:1px solid #161616; display:block; }
+.check-group { display:flex; flex-wrap:wrap; gap:8px; margin-top:6px; }
+.check-item { display:none; }
+.check-group .check-label { font-size:11px !important; font-weight:300; color:var(--white) !important; border:1px solid #2e2e2e; padding:7px 14px; cursor:pointer; transition:all 0.2s; letter-spacing:0.03em; text-transform:none !important; font-family:'Barlow', sans-serif !important; }
+.check-item:checked + .check-label { border-color:var(--red); color:var(--white) !important; background:rgba(192,57,43,0.08); }
+.range-wrap { margin-top:8px; }
+.range-display { font-family:'Barlow Condensed', sans-serif; font-size:28px; font-weight:600; color:var(--white); letter-spacing:0.05em; margin-bottom:6px; }
+.range-display span { font-size:14px; font-weight:300; color:#555; }
+input[type="range"] { width:100%; appearance:none; height:2px; background:#222; outline:none; cursor:pointer; }
+input[type="range"]::-webkit-slider-thumb { appearance:none; width:16px; height:16px; background:var(--red); border-radius:50%; cursor:pointer; transition:transform 0.2s; }
+input[type="range"]::-webkit-slider-thumb:hover { transform:scale(1.3); }
+#form-confirmation { display:none; flex-direction:column; align-items:center; justify-content:center; text-align:center; flex:1; padding:40px; animation:fadeUp 0.8s ease both; }
+.confirm-icon { width:80px; height:80px; border:1px solid var(--red); border-radius:50%; display:flex; align-items:center; justify-content:center; margin-bottom:32px; }
+.confirm-check { width:0; height:0; border-right:2.5px solid var(--red); border-bottom:2.5px solid var(--red); animation:drawCheck 0.4s 0.2s ease both; }
+@keyframes drawCheck { from{width:0;height:0;opacity:0} to{width:14px;height:24px;opacity:1;transform:rotate(45deg) translate(-2px,-4px)} }
+.confirm-label { font-size:9px; font-weight:600; letter-spacing:0.4em; text-transform:uppercase; color:var(--red); margin-bottom:16px; }
+.confirm-title { font-family:'Cormorant Garamond', serif; font-size:42px; font-weight:600; color:var(--white); line-height:1.1; margin-bottom:16px; }
+.confirm-name { color:var(--red); }
+.confirm-text { font-size:13px; font-weight:300; color:#555; line-height:1.8; max-width:380px; margin-bottom:40px; }
+.confirm-offre { font-family:'Barlow Condensed', sans-serif; font-size:11px; font-weight:600; letter-spacing:0.25em; text-transform:uppercase; color:var(--white); border:1px solid #222; padding:10px 24px; margin-bottom:40px; }
+.btn-retour { background:transparent; border:1px solid #222; cursor:pointer; font-family:'Barlow Condensed', sans-serif; font-size:10px; font-weight:600; letter-spacing:0.25em; text-transform:uppercase; color:#555; padding:12px 28px; transition:all 0.2s; }
+.btn-retour:hover { border-color:var(--red); color:var(--white); }
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<div class="toast" id="toast">Inscription confirmée — À très bientôt !</div>
+
+<!-- SPLASH SCREEN -->
+<div id="splash-screen" onclick="launchTeaser()">
+  <div class="splash-logo">GLADI<span>A</span>TORS</div>
+  <div class="splash-line"></div>
+  <div class="splash-hint">▶ &nbsp; Cliquez pour lancer l'expérience</div>
+</div>
+
+<!-- TEASER OVERLAY -->
+<div id="teaser-overlay" style="display:none;">
+  <video id="teaser-video" playsinline muted></video>
+  <button id="skip-btn" onclick="endTeaser()">Passer ›</button>
+</div>
+
+<!-- AUDIO -->
+<audio id="bg-music" loop></audio>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">GLADI<span>A</span>TORS</div>
+  <div class="nav-badge">Ouverture Septembre 2027</div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-slash"></div>
+  <div class="hero-slash-2"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">Complexe Sportif Premium — Ouverture Septembre 2027</div>
+    <h1 class="hero-title">
+      <span class="outline">GLADI</span><span class="red">A</span>TORS
+    </h1>
+    <p class="hero-sub">Du standard au plus luxueux — logique de parcours adhérent</p>
+    <div class="countdown-wrap">
+      <div class="countdown-label">Ouverture dans</div>
+      <div class="countdown">
+        <div class="cd-block"><div class="cd-num" id="cd-days">000</div><div class="cd-unit">Jours</div></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-block"><div class="cd-num" id="cd-hours">00</div><div class="cd-unit">Heures</div></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-block"><div class="cd-num" id="cd-mins">00</div><div class="cd-unit">Minutes</div></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-block"><div class="cd-num" id="cd-secs">00</div><div class="cd-unit">Secondes</div></div>
+      </div>
+    </div>
+    <div class="preinscription">
+      <div class="form-wrap">
+        <input type="email" id="emailInput" placeholder="Votre adresse email" />
+        <button onclick="handleSubscribe()">Pré-inscription</button>
+      </div>
+      <p class="form-note">Offre fondateur exclusive — <span>Tarif préférentiel garanti à vie</span></p>
+    </div>
+  </div>
+  <div class="scroll-hint">
+    <span>Découvrir</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- ESPACES -->
+<section class="section-spaces">
+  <div class="section-header reveal">
+    <div>
+      <div class="section-label">Le complexe</div>
+      <h2 class="section-title">8 espaces,<br>une expérience</h2>
+    </div>
+    <div class="section-count">08</div>
+  </div>
+  <div class="spaces-grid">
+    <div class="space-card reveal"><span class="space-num">01</span><div class="space-name">Salle de sport principale</div><p class="space-desc">Musculation, cardio, functional training et cours collectifs dans un espace premium.</p><span class="space-tag">Fitness</span></div>
+    <div class="space-card reveal"><span class="space-num">02</span><div class="space-name">Salle de combat</div><p class="space-desc">Boxe, MMA, kick-boxing, judo, BJJ — encadrés par des coachs diplômés d'État.</p><span class="space-tag">Combat</span></div>
+    <div class="space-card reveal"><span class="space-num">03</span><div class="space-name">Piscine olympique</div><p class="space-desc">Nage libre, aquafitness, rééducation — avec MNS en permanence.</p><span class="space-tag">Natation</span></div>
+    <div class="space-card reveal"><span class="space-num">04</span><div class="space-name">Espace Padel</div><p class="space-desc">Courts couverts accessibles aux adhérents et au public extérieur.</p><span class="space-tag">Padel</span></div>
+    <div class="space-card reveal"><span class="space-num">05</span><div class="space-name">Espace Femmes</div><p class="space-desc">Accès exclusif par badge — un espace conçu pour et par les femmes.</p><span class="space-tag">Exclusif</span></div>
+    <div class="space-card reveal"><span class="space-num">06</span><div class="space-name">Espace Enfants</div><p class="space-desc">Personnel diplômé, vidéosurveillance et contrôle d'accès badge.</p><span class="space-tag">Famille</span></div>
+    <div class="space-card reveal"><span class="space-num">07</span><div class="space-name">Restaurant</div><p class="space-desc">Snacking healthy, plats complets, bornes de commande, filtrage allergies.</p><span class="space-tag">Nutrition</span></div>
+    <div class="space-card reveal"><span class="space-num">08</span><div class="space-name">Parking souterrain</div><p class="space-desc">Sécurisé, intégré au système de contrôle d'accès du complexe.</p><span class="space-tag">Sécurité</span></div>
+  </div>
+</section>
+
+<!-- OFFRES -->
+<section class="section-offres">
+  <div class="section-header reveal">
+    <div>
+      <div class="section-label">Nos offres</div>
+      <h2 class="section-title">Un parcours,<br>quatre niveaux</h2>
+    </div>
+  </div>
+  <div class="offres-grid">
+    <div class="offre-card reveal">
+      <div class="offre-name">ACCESS</div><div class="offre-promise">Entrer</div>
+      <div class="offre-price"><sup>€</sup>59<sub>/mois</sub></div>
+      <div class="offre-adhesion">Adhésion : 79 €</div><div class="offre-divider"></div>
+      <ul class="offre-features"><li>Salle principale & cours collectifs</li><li>Application de suivi digital</li><li>Bilan d'entrée simplifié</li><li>Parcours démarrage 30 jours</li><li>Accès parking</li></ul>
+      <button class="offre-cta" onclick="openForm('ACCESS')">Je pré-m'inscris</button>
+    </div>
+    <div class="offre-card reveal">
+      <div class="offre-name">EVOLVE</div><div class="offre-promise">Progresser</div>
+      <div class="offre-price"><sup>€</sup>89<sub>/mois</sub></div>
+      <div class="offre-adhesion">Adhésion : 99 €</div><div class="offre-divider"></div>
+      <ul class="offre-features"><li>Tout ACCESS inclus</li><li>Parcours personnalisé 90 jours</li><li>1 coaching individuel / mois</li><li>Recommandations nutritionnelles</li><li>Accès salle de boxe & espace enfants</li></ul>
+      <button class="offre-cta" onclick="openForm('EVOLVE')">Je pré-m'inscris</button>
+    </div>
+    <div class="offre-card featured reveal">
+      <div class="featured-badge">★ Offre phare</div>
+      <div class="offre-name">SIGNATURE</div><div class="offre-promise">Vivre l'expérience</div>
+      <div class="offre-price"><sup>€</sup>129<sub>/mois</sub></div>
+      <div class="offre-adhesion">Adhésion : 149 €</div><div class="offre-divider"></div>
+      <ul class="offre-features"><li>Tout EVOLVE inclus</li><li>Piscine olympique & sports de combat</li><li>Espace femmes & créneaux enfants</li><li>2 coachings individuels / mois</li><li>Avantages restaurant inclus</li><li>Priorité sur toutes réservations</li></ul>
+      <button class="offre-cta" onclick="openForm('SIGNATURE')">Je pré-m'inscris</button>
+    </div>
+    <div class="offre-card reveal" style="border-bottom-color:var(--gold)">
+      <div class="offre-name" style="color:var(--gold)">ELITE</div><div class="offre-promise">Sur-mesure</div>
+      <div class="offre-price" style="color:var(--gold)"><sup>€</sup>189<sub>/mois</sub></div>
+      <div class="offre-adhesion" style="color:var(--red)">Adhésion offerte au lancement</div>
+      <div class="offre-divider" style="background:var(--gold)"></div>
+      <ul class="offre-features"><li>Tout SIGNATURE inclus</li><li>Diagnostic premium sur mesure</li><li>Feuille de route révisée régulièrement</li><li>Priorité maximale VIP</li><li>Expérience lifestyle complète</li><li>Accès tous espaces sans restriction</li></ul>
+      <button class="offre-cta" style="border-color:var(--gold);color:var(--gold)" onclick="openForm('ELITE')">Je pré-m'inscris</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">
+    <div class="logo">GLADI<span>A</span>TORS</div>
+    <p>Complexe sportif premium multi-espaces.<br>Ouverture septembre 2027.<br>Un investissement de 40 M€ pour une expérience sans équivalent.</p>
+  </div>
+  <div class="footer-col">
+    <h4>Le complexe</h4>
+    <ul><li>Salle de sport principale</li><li>Salle de combat</li><li>Piscine olympique</li><li>Espace Padel</li><li>Espace Femmes</li><li>Espace Enfants</li><li>Restaurant</li><li>Parking souterrain</li></ul>
+  </div>
+  <div class="footer-col">
+    <h4>Nos offres</h4>
+    <ul><li>ACCESS — 59 €/mois</li><li>EVOLVE — 89 €/mois</li><li>SIGNATURE — 129 €/mois</li><li>ELITE — 189 €/mois</li></ul>
+  </div>
+</footer>
+<div class="footer-bottom">
+  <span>© 2027 <b>GLADIATORS</b> — Tous droits réservés</span>
+  <span>Ouverture <b>Septembre 2027</b></span>
+</div>
+
+<!-- MODAL FORMULAIRE -->
+<div id="form-modal">
+  <div class="modal-inner">
+    <button class="modal-close" onclick="closeForm()">✕</button>
+    <div class="form-page">
+      <!-- GAUCHE -->
+      <div class="side-left">
+        <div class="slash-deco"></div>
+        <div class="logo-form">GLADI<span>A</span>TORS</div>
+        <div class="side-tagline">
+          <div class="label">Pré-inscription fondateur</div>
+          <h1>Votre transformation<br>commence <em>ici</em></h1>
+          <p>Rejoignez les premiers membres GLADIATORS et bénéficiez d'un tarif préférentiel garanti à vie, avant l'ouverture officielle de septembre 2027.</p>
+        </div>
+        <div class="side-badges">
+          <div class="badge-item"><div class="badge-dot"></div>Tarif fondateur garanti à vie</div>
+          <div class="badge-item"><div class="badge-dot"></div>Accès prioritaire dès l'ouverture</div>
+          <div class="badge-item"><div class="badge-dot"></div>8 espaces — 1 parcours sur mesure</div>
+          <div class="badge-item"><div class="badge-dot"></div>Ouverture septembre 2027</div>
+        </div>
+      </div>
+      <!-- DROITE -->
+      <div class="side-right">
+        <div id="form-section">
+          <div class="form-header">
+            <div class="step-label">Vos informations</div>
+            <h2>Réservez votre place<br>parmi les fondateurs</h2>
+          </div>
+          <div class="form-grid">
+            <div class="field full"><label>Civilité</label><div class="civility-wrap"><label class="civ-opt"><input type="radio" name="civilite" value="M."><div class="civ-box"></div>M.</label><label class="civ-opt"><input type="radio" name="civilite" value="Mme"><div class="civ-box"></div>Mme</label></div></div>
+            <div class="field"><label>Nom *</label><input type="text" id="f-nom" placeholder="Dupont" autocomplete="family-name"></div>
+            <div class="field half-right"><label>Prénom *</label><input type="text" id="f-prenom" placeholder="Jean" autocomplete="given-name"></div>
+            <div class="field"><label>Date de naissance *</label><input type="date" id="f-ddn"></div>
+            <div class="field half-right"><label>Téléphone *</label><input type="tel" id="f-tel" placeholder="06 00 00 00 00" autocomplete="tel"></div>
+            <div class="field full"><label>Adresse email *</label><input type="email" id="f-email" placeholder="jean.dupont@email.com" autocomplete="email"></div>
+            <div class="field full"><label>Adresse postale *</label><input type="text" id="f-adresse" placeholder="12 rue de la République" autocomplete="street-address"></div>
+            <div class="field"><label>Code postal *</label><input type="text" id="f-cp" placeholder="75001" maxlength="5" autocomplete="postal-code"></div>
+            <div class="field half-right"><label>Ville *</label><input type="text" id="f-ville" placeholder="Paris" autocomplete="address-level2"></div>
+            <div class="field full">
+              <label>Offre souhaitée *</label>
+              <div class="offre-selector">
+                <input type="radio" name="offre" id="o-access" value="ACCESS" class="offre-opt"><label for="o-access" class="offre-label"><span class="offre-tier">ACCESS</span><span class="offre-price-tag">59 €/mois</span></label>
+                <input type="radio" name="offre" id="o-evolve" value="EVOLVE" class="offre-opt"><label for="o-evolve" class="offre-label"><span class="offre-tier">EVOLVE</span><span class="offre-price-tag">89 €/mois</span></label>
+                <input type="radio" name="offre" id="o-signature" value="SIGNATURE" class="offre-opt"><label for="o-signature" class="offre-label"><span class="offre-tier">SIGNATURE</span><span class="offre-price-tag">129 €/mois</span></label>
+                <input type="radio" name="offre" id="o-elite" value="ELITE" class="offre-opt elite"><label for="o-elite" class="offre-label"><span class="offre-tier">ELITE</span><span class="offre-price-tag">189 €/mois</span></label>
+              </div>
+            </div>
+          </div>
+
+          <div class="sante-consent-block">
+            <div class="sante-consent-header" onclick="toggleSante()">
+              <div class="sante-consent-checkbox" id="sante-box"></div>
+              <div class="sante-consent-text">
+                <div class="sante-consent-title">Profil santé & activité physique</div>
+                <p class="sante-consent-sub">Facultatif — Je consens à partager mes données de santé afin de recevoir un <span>parcours d'accompagnement 100% personnalisé</span> dès l'ouverture.</p>
+              </div>
+            </div>
+            <div class="sante-note">
+              <div class="sante-note-title">Pourquoi ces données ? Comment sont-elles protégées ?</div>
+              <p>Ces informations permettent à nos coachs de <strong>préparer votre bilan d'entrée</strong>, d'adapter les programmes proposés et d'anticiper toute contrainte médicale ou alimentaire avant votre première séance.</p>
+              <p>Vos données de santé sont des <strong>données sensibles au sens du RGPD (Art. 9)</strong>. Elles sont chiffrées, stockées sur des serveurs sécurisés situés en France, accessibles uniquement au personnel habilité GLADIATORS, et ne sont jamais transmises à des tiers.</p>
+            </div>
+            <div class="sante-fields" id="sante-fields">
+              <span class="sante-section-label">Morphologie</span>
+              <div class="form-grid">
+                <div class="field"><label>Taille</label><div class="range-wrap"><div class="range-display" id="taille-val">170 <span>cm</span></div><input type="range" id="f-taille" min="140" max="220" value="170" oninput="document.getElementById('taille-val').innerHTML=this.value+' <span>cm</span>'"></div></div>
+                <div class="field half-right"><label>Poids</label><div class="range-wrap"><div class="range-display" id="poids-val">70 <span>kg</span></div><input type="range" id="f-poids" min="40" max="160" value="70" oninput="document.getElementById('poids-val').innerHTML=this.value+' <span>kg</span>'"></div></div>
+              </div>
+              <span class="sante-section-label">Activité physique — 12 derniers mois</span>
+              <div class="field full" style="border-bottom:none;padding-bottom:0"><label>Rythme d'entraînement</label><div class="check-group"><input type="radio" name="rythme" id="r0" value="Aucune activité" class="check-item"><label for="r0" class="check-label">Aucune activité</label><input type="radio" name="rythme" id="r1" value="Occasionnelle" class="check-item"><label for="r1" class="check-label">Occasionnelle</label><input type="radio" name="rythme" id="r2" value="Régulière" class="check-item"><label for="r2" class="check-label">Régulière (1–2×/sem.)</label><input type="radio" name="rythme" id="r3" value="Soutenue" class="check-item"><label for="r3" class="check-label">Soutenue (3–4×/sem.)</label><input type="radio" name="rythme" id="r4" value="Intensive" class="check-item"><label for="r4" class="check-label">Intensive (5×+/sem.)</label></div></div>
+              <div class="field full" style="padding:18px 0 0 0;border-bottom:none"><label>Types d'activités pratiquées</label><div class="check-group"><input type="checkbox" id="act-muscu" value="Musculation" class="check-item"><label for="act-muscu" class="check-label">Musculation</label><input type="checkbox" id="act-cardio" value="Cardio" class="check-item"><label for="act-cardio" class="check-label">Cardio / Course</label><input type="checkbox" id="act-natation" value="Natation" class="check-item"><label for="act-natation" class="check-label">Natation</label><input type="checkbox" id="act-combat" value="Sports de combat" class="check-item"><label for="act-combat" class="check-label">Sports de combat</label><input type="checkbox" id="act-yoga" value="Yoga / Pilates" class="check-item"><label for="act-yoga" class="check-label">Yoga / Pilates</label><input type="checkbox" id="act-outdoor" value="Outdoor" class="check-item"><label for="act-outdoor" class="check-label">Outdoor / Trail</label></div></div>
+              <span class="sante-section-label">Alimentation</span>
+              <div class="field full" style="border-bottom:none;padding-bottom:0"><label>Régime alimentaire</label><div class="check-group"><input type="radio" name="regime" id="reg-aucun" value="Aucun" class="check-item"><label for="reg-aucun" class="check-label">Aucun</label><input type="radio" name="regime" id="reg-vege" value="Végétarien" class="check-item"><label for="reg-vege" class="check-label">Végétarien</label><input type="radio" name="regime" id="reg-vegan" value="Vegan" class="check-item"><label for="reg-vegan" class="check-label">Vegan</label><input type="radio" name="regime" id="reg-halal" value="Halal" class="check-item"><label for="reg-halal" class="check-label">Halal</label><input type="radio" name="regime" id="reg-kasher" value="Kasher" class="check-item"><label for="reg-kasher" class="check-label">Kasher</label></div></div>
+              <div class="field full" style="padding-top:18px"><label>Objectif principal</label><div class="check-group"><input type="radio" name="objectif" id="obj-perte" value="Perte de poids" class="check-item"><label for="obj-perte" class="check-label">Perte de poids</label><input type="radio" name="objectif" id="obj-muscle" value="Prise de muscle" class="check-item"><label for="obj-muscle" class="check-label">Prise de muscle</label><input type="radio" name="objectif" id="obj-endurance" value="Endurance" class="check-item"><label for="obj-endurance" class="check-label">Endurance</label><input type="radio" name="objectif" id="obj-sante" value="Bien-être / Santé" class="check-item"><label for="obj-sante" class="check-label">Bien-être / Santé</label><input type="radio" name="objectif" id="obj-perf" value="Performance" class="check-item"><label for="obj-perf" class="check-label">Performance sportive</label></div></div>
+            </div>
+          </div>
+
+          <div class="rgpd-wrap" onclick="toggleRgpd()">
+            <div class="rgpd-box" id="rgpd-box"></div>
+            <p class="rgpd-text">J'accepte que mes données personnelles soient utilisées par GLADIATORS dans le cadre de ma pré-inscription et de la gestion de mon futur abonnement. <span>Conformément au RGPD, vous disposez d'un droit d'accès, de rectification et de suppression de vos données.</span></p>
+          </div>
+          <p id="form-error" style="font-size:11px;color:var(--red);letter-spacing:0.05em;margin-bottom:16px;display:none;"></p>
+          <button class="btn-submit" onclick="submitForm()">Confirmer ma pré-inscription →</button>
+        </div>
+
+        <div id="form-confirmation">
+          <div class="confirm-icon"><div class="confirm-check" id="confirm-check"></div></div>
+          <div class="confirm-label">Pré-inscription confirmée</div>
+          <h2 class="confirm-title">Bienvenue,<br><span class="confirm-name" id="confirm-name">Jean</span></h2>
+          <p class="confirm-text">Votre place parmi les membres fondateurs GLADIATORS est réservée. Vous recevrez toutes les informations de lancement par email dès que l'ouverture approchera.</p>
+          <div class="confirm-offre" id="confirm-offre">Offre SIGNATURE — 129 €/mois</div>
+          <button class="btn-retour" onclick="closeForm()">← Retour au site</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── MEDIA SOURCE (fichiers dans le même dossier) ──
+document.getElementById('teaser-video').src = 'gladiators_teaser.mp4';
+document.getElementById('bg-music').src = 'music.mp3';
+
+// ── TEASER ──
+const overlay = document.getElementById('teaser-overlay');
+const video = document.getElementById('teaser-video');
+const audio = document.getElementById('bg-music');
+let teaserEnded = false;
+
+function launchTeaser() {
+  // Hide splash
+  const splash = document.getElementById('splash-screen');
+  splash.classList.add('hide');
+  setTimeout(() => { splash.style.display = 'none'; }, 900);
+
+  // Show teaser and play
+  overlay.style.display = 'flex';
+  video.play().catch(() => {});
+  audio.volume = 0.6;
+  audio.play().catch(() => {});
+}
+
+function endTeaser() {
+  if (teaserEnded) return;
+  teaserEnded = true;
+  overlay.classList.add('fade-out');
+  // La musique continue — elle s'arrête uniquement à l'ouverture du formulaire
+  setTimeout(() => { overlay.style.display = 'none'; }, 1600);
+}
+
+video.addEventListener('ended', endTeaser);
+
+// ── CURSOR ──
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursorRing');
+let mx = 0, my = 0, rx = 0, ry = 0;
+document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+(function animCursor() {
+  rx += (mx - rx) * 0.12;
+  ry += (my - ry) * 0.12;
+  cursor.style.transform = `translate(${mx-5}px, ${my-5}px)`;
+  ring.style.transform = `translate(${rx-18}px, ${ry-18}px)`;
+  requestAnimationFrame(animCursor);
+})();
+document.querySelectorAll('button, a, .space-card, .offre-card, .offre-label, .rgpd-wrap').forEach(el => {
+  el.addEventListener('mouseenter', () => { ring.style.width='56px'; ring.style.height='56px'; ring.style.borderColor='rgba(192,57,43,0.8)'; });
+  el.addEventListener('mouseleave', () => { ring.style.width='36px'; ring.style.height='36px'; ring.style.borderColor='rgba(192,57,43,0.5)'; });
+});
+
+// ── COUNTDOWN ──
+function updateCountdown() {
+  const target = new Date('2027-09-01T09:00:00');
+  const now = new Date();
+  const diff = target - now;
+  if (diff <= 0) { document.getElementById('cd-days').textContent = '000'; return; }
+  const days  = Math.floor(diff / 86400000);
+  const hours = Math.floor((diff % 86400000) / 3600000);
+  const mins  = Math.floor((diff % 3600000) / 60000);
+  const secs  = Math.floor((diff % 60000) / 1000);
+  document.getElementById('cd-days').textContent  = String(days).padStart(3,'0');
+  document.getElementById('cd-hours').textContent = String(hours).padStart(2,'0');
+  document.getElementById('cd-mins').textContent  = String(mins).padStart(2,'0');
+  document.getElementById('cd-secs').textContent  = String(secs).padStart(2,'0');
+}
+updateCountdown();
+setInterval(updateCountdown, 1000);
+
+// ── HERO EMAIL FORM ──
+function handleSubscribe() {
+  const input = document.getElementById('emailInput');
+  const email = input.value.trim();
+  if (!email || !email.includes('@')) {
+    input.style.outline = '1px solid var(--red)';
+    input.placeholder = 'Entrez un email valide';
+    return;
+  }
+  // Open full form with email pre-filled
+  openForm(null, email);
+}
+document.getElementById('emailInput').addEventListener('keypress', e => {
+  if (e.key === 'Enter') handleSubscribe();
+});
+
+// ── MODAL FORM ──
+function openForm(offre, email) {
+  const modal = document.getElementById('form-modal');
+  modal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  // Fade out music
+  let vol = audio.volume;
+  const fadeAudio = setInterval(() => {
+    vol = Math.max(0, vol - 0.05);
+    audio.volume = vol;
+    if (vol <= 0) { clearInterval(fadeAudio); audio.pause(); }
+  }, 75);
+  // Pre-fill email
+  if (email) document.getElementById('f-email').value = email;
+  // Pre-select offer
+  if (offre) {
+    const radio = document.querySelector(`input[name="offre"][value="${offre}"]`);
+    if (radio) radio.checked = true;
+  }
+  // Reset confirmation state
+  document.getElementById('form-section').style.display = '';
+  document.getElementById('form-confirmation').style.display = 'none';
+}
+function closeForm() {
+  document.getElementById('form-modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+// Close on backdrop click
+document.getElementById('form-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeForm();
+});
+
+// ── SANTÉ TOGGLE ──
+let santeChecked = false;
+function toggleSante() {
+  santeChecked = !santeChecked;
+  document.getElementById('sante-box').classList.toggle('checked', santeChecked);
+  document.getElementById('sante-fields').classList.toggle('open', santeChecked);
+}
+
+// ── RGPD ──
+let rgpdChecked = false;
+function toggleRgpd() {
+  rgpdChecked = !rgpdChecked;
+  document.getElementById('rgpd-box').classList.toggle('checked', rgpdChecked);
+}
+
+// ── FORM SUBMIT ──
+function showError(msg) {
+  const err = document.getElementById('form-error');
+  err.textContent = msg;
+  err.style.display = 'block';
+}
+function hideError() { document.getElementById('form-error').style.display = 'none'; }
+
+function submitForm() {
+  hideError();
+  const nom     = document.getElementById('f-nom').value.trim();
+  const prenom  = document.getElementById('f-prenom').value.trim();
+  const email   = document.getElementById('f-email').value.trim();
+  const tel     = document.getElementById('f-tel').value.trim();
+  const ddn     = document.getElementById('f-ddn').value;
+  const adresse = document.getElementById('f-adresse').value.trim();
+  const cp      = document.getElementById('f-cp').value.trim();
+  const ville   = document.getElementById('f-ville').value.trim();
+  const offre   = document.querySelector('input[name="offre"]:checked');
+
+  if (!nom)    return showError('Veuillez renseigner votre nom.');
+  if (!prenom) return showError('Veuillez renseigner votre prénom.');
+  if (!email || !email.includes('@')) return showError('Adresse email invalide.');
+  if (!tel)    return showError('Veuillez renseigner votre téléphone.');
+  if (!ddn)    return showError('Veuillez renseigner votre date de naissance.');
+  if (!adresse)return showError('Veuillez renseigner votre adresse.');
+  if (!cp || cp.length < 4) return showError('Code postal invalide.');
+  if (!ville)  return showError('Veuillez renseigner votre ville.');
+  if (!offre)  return showError('Veuillez sélectionner une offre.');
+  if (!rgpdChecked) return showError('Veuillez accepter les conditions pour continuer.');
+
+  const prix = { ACCESS:'59 €/mois', EVOLVE:'89 €/mois', SIGNATURE:'129 €/mois', ELITE:'189 €/mois' };
+  document.getElementById('confirm-name').textContent = prenom;
+  document.getElementById('confirm-offre').textContent = `Offre ${offre.value} — ${prix[offre.value]}`;
+  document.getElementById('form-section').style.display = 'none';
+  const conf = document.getElementById('form-confirmation');
+  conf.style.display = 'flex';
+  const check = document.getElementById('confirm-check');
+  check.style.animation = 'none';
+  check.offsetHeight;
+  check.style.animation = '';
+}
+
+// ── SCROLL REVEAL ──
+const observer = new IntersectionObserver(entries => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => entry.target.classList.add('visible'), i * 60);
+    }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
